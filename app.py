@@ -47,7 +47,7 @@ def security_context_processor():
     )
 
 
-@app.cli.command()
+@app.cli.command('build_sample_db')
 def build_sample_db():
     """
     Populate a small db with some example entries.

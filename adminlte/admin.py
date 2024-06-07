@@ -25,13 +25,13 @@ class AdminLte(Admin):
         self.skin = skin
 
         admin_db.app = app
-        admin_db.init_app(app)
+        #admin_db.init_app(app)
         self.add_view(AdminsView(User, admin_db.session, name = "Adminstrators", menu_icon_value = 'fa-user-secret'))
 
     def gravatar_image_url(self, email, default_url, size = 96):
-        return "https://www.gravatar.com/avatar/" \
-               + hashlib.md5(email.lower()).hexdigest() \
-               + "?" + urllib.urlencode({'d': default_url, 's': str(size)})
+        return "https://cn.gravatar.com/avatar/" \
+               + hashlib.md5(email.lower().encode('utf-8')).hexdigest() \
+               + "?" + urllib.parse.urlencode({'d': default_url, 's': str(size)})
 
     def set_category_icon(self, name, icon_value, icon_type = "fa"):
         cat_text = as_unicode(name)

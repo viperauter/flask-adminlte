@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_security import RoleMixin, UserMixin
-
-admin_db = SQLAlchemy()
+from models import db as admin_db
+#admin_db = SQLAlchemy()
 
 roles_users = admin_db.Table(
     'roles_users',

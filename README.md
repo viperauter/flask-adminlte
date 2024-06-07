@@ -2,6 +2,8 @@
 Bootstrap [AdminLTE](https://adminlte.io/) template adapted to the flask framework using [flask-admin 1.5.2](https://flask-admin.readthedocs.io/en/latest/) and [flask-security 3.0.0](https://pythonhosted.org/Flask-Security/).\
 It helps to develop pretty, easy to use admin panel for backend written in flask. 
 
+### Initalization
+flask build_sample_db
 ### Live preview
 http://adminlte.najdaapps.com/admin/ \
 **login:** admin@admin.com \
