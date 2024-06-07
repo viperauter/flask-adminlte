@@ -2,3 +2,5 @@ Flask==2.2.5
 Flask-Admin==1.6.1
 Flask-Migrate==4.0.4
 Flask-Security==3.0.0
+Flask-WTF==1.0.0
+Werkzeug==2.3.7
