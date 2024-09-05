@@ -1,8 +1,13 @@
 from flask_admin.contrib import sqla
-from flask_security import current_user
-from flask import url_for, redirect, request, abort
+from flask_security import current_user,RegisterForm
+from flask import url_for, redirect, request, abort,current_app
 from flask_admin import menu
-
+from wtforms import StringField
+from wtforms.validators import DataRequired
+from flask_admin.menu import MenuLink, MenuCategory
+import uuid
+from urllib.parse import quote
+from flask_admin import expose
 
 class FaLink(menu.MenuLink):
 
@@ -63,3 +68,54 @@ class AdminsView(BaseAdminView):
     edit_modal = True
     create_modal = True
     details_modal = True
+
+class ExtendedRegisterForm(RegisterForm):
+    first_name = StringField('First Name', [DataRequired()])
+    last_name = StringField('Last Name', [DataRequired()])
+
+class DynamicMenuLink(MenuLink):
+    def __init__(self, *args, **kwargs):
+        self._uuid = uuid.uuid4()
+        super().__init__( *args, **kwargs)
+
+class DynamicMenuCategory(MenuCategory):
+    def __init__(self, *args, **kwargs):
+        self._uuid = uuid.uuid4()
+        super().__init__( *args, **kwargs)
+
+
+class DynamicView(BaseAdminView):
+    def __init__(self, *args, **kwargs):
+        super(DynamicView, self).__init__(*args, **kwargs)
+        self.view_id = f"{self.__class__.__name__}_{str(uuid.uuid4())}"  # Generate a unique UUID for each view instance
+
+    def get_view_id(self):
+        """Return the unique view ID"""
+        return self.view_id
+
+    def _get_adminlte(self):
+        """Retrieve the Admin instance from the Flask app context"""
+        with current_app.app_context():
+            adminlte = current_app.extensions['admin'][0]
+        return adminlte
+
+    def update_dynamic_menus(self):
+        """
+        Method to update dynamic menus. Should be overridden by subclasses to define specific menu logic.
+        """
+        raise NotImplementedError("Subclasses should implement this method to update dynamic menus.")
+
+    def add_dynamic_category(self, name, icon_type="fa", icon_value=None):
+        """Add a dynamic category using the AdminLte API"""
+        admin = self._get_adminlte()
+        admin.add_dynamic_category(self.get_view_id(), name, icon_type, icon_value)
+
+    def add_dynamic_menu_link(self, name, url=None, category=None, icon_type="fa", icon_value=None):
+        """Add a dynamic menu link using the AdminLte API"""
+        admin = self._get_adminlte()
+        admin.add_dynamic_link(self.get_view_id(), name, url, category, icon_type, icon_value)
+
+    def clear_dynamic_menus(self):
+        """Clear dynamic menus associated with this view"""
+        admin = self._get_adminlte()
+        admin.clear_dynamic_menus(self.get_view_id())
